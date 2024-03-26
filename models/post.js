@@ -24,7 +24,7 @@ postSchema.virtual('url').get(function () {
 });
 
 // Format date using date-fns, formats to, example: (12:40 26 Mar 2024)
-commentSchema.virtual('formattedTimeStamp').get(function () {
+postSchema.virtual('formattedTimeStamp').get(function () {
   const formattedDate = format(this.timeStamp, 'kk:mm d MMM y');
   return formattedDate;
 });

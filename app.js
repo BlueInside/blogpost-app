@@ -11,7 +11,8 @@ require('dotenv').config();
 require('./config/database');
 
 const indexRouter = require('./routes/index');
-
+const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 const app = express();
 
 // view engine setup
@@ -25,6 +26,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/posts', postRouter);
+app.use('/users', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

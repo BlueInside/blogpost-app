@@ -4,6 +4,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+// Gives access to the environmental variable
+require('dotenv').config();
+
+// Connect to the database
+require('./config/database');
+
 const indexRouter = require('./routes/index');
 
 const app = express();

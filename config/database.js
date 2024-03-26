@@ -19,4 +19,7 @@ const connect = async () => {
   }
 };
 
+connect(); // Connect to the database immediately upon importing this module
+
+// export connection
 module.exports = connect;

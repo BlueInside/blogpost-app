@@ -11,7 +11,7 @@ const userSchema = new Schema({
 });
 
 // Virtual properties
-userSchema.virtual('fullname').get(() => {
+userSchema.virtual('fullname').get(function () {
   return `${firstName} ${lastName}`; // Virtual property for the full name of the user
 });
 

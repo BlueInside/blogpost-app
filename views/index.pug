@@ -1,4 +1,30 @@
 extends layout
 
 block content
-  h1 Blogpost API
+  h1 Welcome to the BlogPost API!
+    p This API provides endpoints for managing blog posts and comments.
+    h2 Available Endpoints:
+    ul
+      li
+        a(href="/posts") GET /posts - Retrieve all blog posts
+      li
+        a(href="/posts/:id") GET /posts/:id - Retrieve a specific blog post by ID
+      li
+        a(href="/posts") POST /posts - Create a new blog post
+      li
+        a(href="/posts/:id") PUT /posts/:id - Update a specific blog post by ID
+      li
+        a(href="/posts/:id") DELETE /posts/:id - Delete a specific blog post by ID
+      li
+        a(href="/posts/:id/comments") GET /posts/:id/comments - Retrieve comments for a specific blog post
+      li
+        a(href="/comments") GET /comments - Retrieve all comments
+      li
+        a(href="/comments/:id") GET /comments/:id - Retrieve a specific comment by ID
+      li
+        a(href="/comments") POST /comments - Create a new comment
+      li
+        a(href="/comments/:id") PUT /comments/:id - Update a specific comment by ID
+      li
+        a(href="/comments/:id") DELETE /comments/:id - Delete a specific comment by ID
+

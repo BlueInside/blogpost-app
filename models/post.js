@@ -4,10 +4,11 @@ const { Schema } = require('mongoose');
 
 // Defines Schema
 const postSchema = new Schema({
+  author: { type: mongoose.Types.ObjectId, ref: 'User', required: true }, // Reference to the User model
   title: { type: String, required: true, minLength: 3 },
   content: { type: String, required: true, minLength: 3 },
   comments: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }], // Reference to the Comment model
-  timeStamp: { type: Date, default: Date.now, required: true }, //Creates timestamp, default to current time
+  timeStamp: { type: Date, default: Date.now, required: true }, // Creates timestamp, default to current time
   isPublished: { type: Boolean, default: false }, // Only isPublished === true posts will be visible to users
 });
 

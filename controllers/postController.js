@@ -1,7 +1,7 @@
 // Requires
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
-
+const mongoose = require('mongoose');
 // require .env file
 require('dotenv').config();
 
@@ -40,7 +40,6 @@ exports.post_create = [
     // Get user id from JWT authentication,
     const authorId = process.env.AUTHOR_ID;
     const errors = validationResult(req);
-    console.log(req.body, authorId);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -61,7 +60,19 @@ exports.post_create = [
 
 // Display detail for a specific post
 exports.post_detail = asyncHandler(async (req, res, next) => {
-  res.json({ message: `GET post ${req.params.id} detail not implemented yet` });
+  // Validate req.params.id as a valid mongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid post ID' });
+  }
+
+  // Find the post by ID
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    return res.status(400).json({ message: 'Post not found' });
+  } else {
+    // If the post is found return it
+    res.json(post);
+  }
 });
 
 // Handle post update on POST

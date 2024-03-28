@@ -18,7 +18,7 @@ exports.user_detail = (req, res, next) => {
   res.json({ message: `GET user ${req.params.id} detail not implemented yet` });
 };
 
-// Handle user update on POST
+// Handle user update on PUT
 exports.user_update = (req, res, next) => {
   res.json({ message: `PUT user ${req.params.id} not implemented yet` });
 };

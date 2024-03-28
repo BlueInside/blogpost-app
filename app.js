@@ -36,8 +36,15 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+  err.stack = req.app.get('env') === 'development' ? err.stack : undefined;
   // Send error
-  res.status(err.status || 500).json({ error: err.message, stack: err.stack });
+  if (err.stack !== undefined) {
+    res
+      .status(err.status || 500)
+      .json({ error: err.message, stack: err.stack });
+  } else {
+    res.status(err.status || 500).json({ error: err.message });
+  }
 });
 
 module.exports = app;

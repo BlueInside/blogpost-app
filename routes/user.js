@@ -6,7 +6,7 @@ const router = express.Router();
 // Require controller modules
 const user_controller = require('../controllers/userController.js');
 
-/// GET ROUTES ///
+/// User ROUTES ///
 
 // GET request for getting all the users
 router.get('/', user_controller.user_list);
@@ -19,5 +19,8 @@ router.put('/:id', user_controller.user_update);
 
 // DELETE request for deleting a user
 router.delete('/:id', user_controller.user_delete);
+
+// POST request for logging a user
+router.post('/login', user_controller.user_login);
 
 module.exports = router;

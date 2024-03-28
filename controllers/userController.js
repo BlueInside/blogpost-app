@@ -1,9 +1,12 @@
+// Requires
 const User = require('../models/user');
+const asyncHandler = require('express-async-handler');
 
 // Display list of all users.
-exports.user_list = (req, res, next) => {
-  res.json({ message: 'GET users not implemented' });
-};
+exports.user_list = asyncHandler(async (req, res, next) => {
+  const users = await User.find({}).sort({ username: 1 }).exec();
+  res.json({ users });
+});
 
 // Create a new user
 exports.user_create = (req, res, next) => {

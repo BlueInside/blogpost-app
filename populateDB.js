@@ -2,19 +2,24 @@
 
 console.log('This script populates some test user, posts');
 
+// Require Post and Users models
 const Post = require('./models/post');
 const User = require('./models/user');
 
 // Require env
 require('dotenv').config();
+
+// Save mongoose posts and users objects in arrays
 const posts = [];
 const users = [];
 
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 
+// Call main function and console any errors
 main().catch((err) => console.log(err));
 
+// Main function connects to DB and populate db
 async function main() {
   console.log('Debug: About to connect');
   await mongoose.connect(process.env.MONGODB_URL);
@@ -27,7 +32,7 @@ async function main() {
 }
 
 // We pass the index to the ...Create functions so that, for example,
-// user[0] will always be the the first user, regardless of the order
+// post[0] will always be the the first post, regardless of the order
 // in which the elements of promise.all's argument complete.
 async function usersCreate(index, username, password, firstName, lastName) {
   const user = new User({
@@ -36,11 +41,18 @@ async function usersCreate(index, username, password, firstName, lastName) {
     firstName: firstName,
     lastName: lastName,
   });
+
+  // Saves it to DB
   await user.save();
+
+  // Add mongo object reference to users array
   users[index] = user;
+
+  // Logs created user
   console.log(`Added user: ${username}`);
 }
 
+// Creates posts
 async function postCreate(author, index, title, content, isPublished) {
   const postDetails = {
     author,
@@ -51,16 +63,23 @@ async function postCreate(author, index, title, content, isPublished) {
 
   const post = new Post(postDetails);
 
+  // Saves it to DB
   await post.save();
+
+  // Add mongo object reference to posts array
   posts[index] = post;
+
+  // Logs successfully added post
   console.log(`Added Post: ${title} ${content}`);
 }
 
+// Creates users
 async function createUser() {
   console.log('Adding Users');
   await Promise.all([usersCreate(0, 'admin', 'admin', 'Karol', 'Pulawski')]);
 }
 
+// Creates posts
 async function createPosts() {
   console.log('Adding Posts');
   await Promise.all([

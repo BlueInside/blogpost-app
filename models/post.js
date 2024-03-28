@@ -13,6 +13,17 @@ const postSchema = new Schema({
 });
 
 // Pre save operations
+
+// Removes all attached comments on post remove
+postSchema.pre('remove', async function (next) {
+  try {
+    await mongoose.model('Comment').deleteMany({ post: this._id });
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 postSchema.pre('save', function (next) {
   // Capitalize first letter in title
   this.title = this.title.charAt(0).toUpperCase() + this.title.slice(1);

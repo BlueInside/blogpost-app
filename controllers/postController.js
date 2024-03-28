@@ -26,11 +26,19 @@ exports.post_create = [
     .trim()
     .notEmpty()
     .withMessage('Title field cannot be empty')
+    .isLength({
+      min: 3,
+    })
+    .withMessage('Must be longer than 3 characters')
     .escape(),
   body('content')
     .trim()
     .notEmpty()
     .withMessage('Content field cannot be empty')
+    .isLength({
+      min: 3,
+    })
+    .withMessage('Must be longer than 3 characters')
     .escape(),
   body('isPublished')
     .isBoolean()
@@ -96,6 +104,7 @@ exports.post_update = [
     })
     .withMessage('Must be longer than 3 characters')
     .escape(),
+  body('isPublished').isBoolean().withMessage('isPublished must be bool value'),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -122,7 +131,21 @@ exports.post_update = [
 
 // Handle post deletion on DELETE
 exports.post_delete = asyncHandler(async (req, res, next) => {
-  res.json({ message: `DELETE post ${req.params.id} not implemented yet` });
+  // Checks if id is valid mongoose ID
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid post ID' });
+  }
+
+  // Deletes post
+  const deletedPost = await Post.findByIdAndDelete(req.params.id);
+
+  // Throws error when post not found
+  if (!deletedPost) {
+    return res.status(404).json({ message: 'Post not found' });
+  }
+
+  // Return confirmation on deletion
+  res.json({ message: 'Post successfully deleted' });
 });
 
 /// COMMENT CONTROLLER FUNCTIONS

@@ -11,6 +11,9 @@ const post_controller = require('../controllers/postController.js');
 // GET request for getting all the posts
 router.get('/', post_controller.post_list);
 
+// GET request for getting specific post
+router.get('/:id', post_controller.post_detail);
+
 // POST request for creating new post
 router.post('/', post_controller.post_create);
 

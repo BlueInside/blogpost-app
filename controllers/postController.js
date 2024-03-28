@@ -1,5 +1,9 @@
 // Requires
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
+
+// require .env file
+require('dotenv').config();
 
 // Require models
 const Post = require('../models/post');
@@ -15,10 +19,45 @@ exports.post_list = asyncHandler(async (req, res, next) => {
   res.json(posts); // Send the retrieved posts as a JSON response
 });
 
-// Create a new post
-exports.post_create = asyncHandler(async (req, res, next) => {
-  res.json({ message: 'POST post not implemented yet' });
-});
+// Create a new post TODO JWT VALIDATION
+exports.post_create = [
+  // Validate and sanitize body payload
+  body('title')
+    .trim()
+    .notEmpty()
+    .withMessage('Title field cannot be empty')
+    .escape(),
+  body('content')
+    .trim()
+    .notEmpty()
+    .withMessage('Content field cannot be empty')
+    .escape(),
+  body('isPublished')
+    .isBoolean()
+    .withMessage('isPublished must be boolean value'),
+
+  asyncHandler(async (req, res, next) => {
+    // Get user id from JWT authentication,
+    const authorId = process.env.AUTHOR_ID;
+    const errors = validationResult(req);
+    console.log(req.body, authorId);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // Create new post
+    const post = Post({
+      author: authorId,
+      title: req.body.title,
+      content: req.body.content,
+      isPublished: req.body.isPublished,
+    });
+
+    // Save the post to the database
+    const savedPost = await post.save();
+
+    res.status(201).json(savedPost);
+  }),
+];
 
 // Display detail for a specific post
 exports.post_detail = asyncHandler(async (req, res, next) => {

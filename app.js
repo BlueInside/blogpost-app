@@ -37,6 +37,10 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
   err.stack = req.app.get('env') === 'development' ? err.stack : undefined;
+
+  if (err.status === 404) {
+    return res.json({ message: '404 page not found' });
+  }
   // Send error
   if (err.stack !== undefined) {
     res

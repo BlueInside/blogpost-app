@@ -75,15 +75,56 @@ exports.post_detail = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Handle post update on POST
-exports.post_update = asyncHandler(async (req, res, next) => {
-  res.json({ message: `PUT post ${req.params.id} not implemented yet` });
-});
+// Handle post update on PUT
+exports.post_update = [
+  // Validate and sanitize inputs that can be edited
+  body('title')
+    .trim()
+    .notEmpty()
+    .withMessage('Title field must not be empty')
+    .isLength({
+      min: 3,
+    })
+    .withMessage('Must be longer than 3 characters')
+    .escape(),
+  body('content')
+    .trim()
+    .notEmpty()
+    .withMessage('Content field must not be empty')
+    .isLength({
+      min: 3,
+    })
+    .withMessage('Must be longer than 3 characters')
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    // Checks for errors
+    if (!errors.isEmpty()) {
+      // If error send 400 and errors as array
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Update post in database
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    }); // Update document, and return modified version
+
+    if (!updatedPost) {
+      // Return not found message
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Return updated post
+    return res.json(updatedPost);
+  }),
+];
 
 // Handle post deletion on DELETE
 exports.post_delete = asyncHandler(async (req, res, next) => {
   res.json({ message: `DELETE post ${req.params.id} not implemented yet` });
 });
+
 /// COMMENT CONTROLLER FUNCTIONS
 
 // Display list of all comments.

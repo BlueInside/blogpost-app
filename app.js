@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+// Create secret key for JWT
+require('./config/generateSecretKey');
+
 // Gives access to the environmental variable
 require('dotenv').config();
 

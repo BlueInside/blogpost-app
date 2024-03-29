@@ -8,19 +8,19 @@ const user_controller = require('../controllers/userController.js');
 
 /// User ROUTES ///
 
-// GET request for getting all the users
+// GET request for getting all the users requires JWT TOKEN
 router.get('/', user_controller.user_list);
 
 // POST request for creating new user
 router.post('/', user_controller.user_create);
 
-// GET request to get user info
+// GET request to get user info requires JWT TOKEN
 router.get('/:id', user_controller.user_detail);
 
-// PUT request for updating a user
+// PUT request for updating a user requires JWT TOKEN and uses id from it to update user
 router.put('/:id', user_controller.user_update);
 
-// DELETE request for deleting a user
+// DELETE request for deleting a user requires JWT TOKEN
 router.delete('/:id', user_controller.user_delete);
 
 // POST request for logging a user

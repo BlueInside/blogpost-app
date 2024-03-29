@@ -3,7 +3,7 @@ const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
+const authenticateUser = require('../lib/authenticate');
 
 // Require dotenv
 require('dotenv').config();
@@ -77,31 +77,10 @@ exports.user_create = [
 exports.user_login = [
   body('username').trim().escape(),
   body('password').trim().escape(),
-
-  asyncHandler(async (req, res, next) => {
-    // Find username in Database
-    const user = await User.findOne({ username: req.body.username });
-
-    // Checks if username is valid
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid username or password.' }); // Username doesn't match send error
-    }
-
-    // Checks if password match
-    const match = await bcrypt.compare(req.body.password, user.password);
-
-    // If password doesn't match send error
-    if (!match) {
-      return res.status(400).json({ error: 'Invalid username or password.' });
-    }
-
-    // Sign with jwt when user was found and password match
-    jwt.sign({ user }, process.env.JWT_SECRET_KEY, (err, token) => {
-      res.json({
-        token,
-      });
-    });
-  }),
+  authenticateUser,
+  (req, res) => {
+    res.json({ token: res.token });
+  },
 ];
 
 // Display detail for a specific user

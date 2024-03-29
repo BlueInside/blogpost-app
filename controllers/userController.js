@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const authenticateUser = require('../lib/authenticate');
 const mongoose = require('mongoose');
-const { findByIdAndDelete } = require('../models/comment');
+
 // Require dotenv
 require('dotenv').config();
 

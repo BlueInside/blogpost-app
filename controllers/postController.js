@@ -19,7 +19,6 @@ exports.post_list = asyncHandler(async (req, res, next) => {
   res.json(posts); // Send the retrieved posts as a JSON response
 });
 
-// Create a new post TODO JWT VALIDATION
 exports.post_create = [
   // Validate and sanitize body payload
   body('title')

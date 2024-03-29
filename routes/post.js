@@ -35,6 +35,9 @@ router.get('/:postId/comments', post_controller.comment_list);
 // POST a new comment for a specific post
 router.post('/:postId/comments', post_controller.comment_create);
 
+// GET specific comment
+router.get('/:postId/comments/:commentId', post_controller.comment_detail);
+
 // PUT update a comment for a specific post
 router.put('/:postId/comments/:commentId', post_controller.comment_update);
 

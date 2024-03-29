@@ -149,19 +149,57 @@ exports.post_delete = asyncHandler(async (req, res, next) => {
 
 /// COMMENT CONTROLLER FUNCTIONS
 
-// Display list of all comments.
+// Display list of all comments for specific post.
 exports.comment_list = asyncHandler(async (req, res, next) => {
-  res.json({
-    message: `GET all comments for post ${req.params.postId} not implemented`,
-  });
+  // Check DB for comments
+  const comments = await Comment.find({ postId: req.params.postId })
+    .sort({ timeStamp: -1 }) // Sort them from the latest to the oldest
+    .exec();
+  res.json(comments);
 });
 
-// Create a new comment
-exports.comment_create = asyncHandler(async (req, res, next) => {
-  res.json({
-    message: `POST comment for post ${req.params.postId} not implemented yet`,
-  });
-});
+// Create a new comment and assign to specific post.
+exports.comment_create = [
+  body('username').trim().escape(),
+  body('text')
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Text must be at least 3 characters long')
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    // Checks for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Send errors
+      return res
+        .status(400)
+        .json({ message: 'Validation error', error: errors.array() });
+    }
+
+    // Create comment model
+    const comment = Comment({
+      postId: req.params.postId,
+      username: req.body.username === '' ? 'Anonymous' : req.body.username,
+      text: req.body.text,
+    });
+    // Saves the comment
+    const savedComment = await comment.save();
+    console.log(savedComment);
+    // Finds a post by id
+    const post = await Post.findById(req.params.postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    post.comments.push(savedComment._id);
+    // save the post with updated comments
+    await post.save();
+
+    return res.status(201).json(savedComment);
+  }),
+];
 
 // Display detail for a specific comment
 exports.comment_detail = asyncHandler(async (req, res, next) => {

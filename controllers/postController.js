@@ -151,10 +151,17 @@ exports.post_delete = asyncHandler(async (req, res, next) => {
 
 // Display list of all comments for specific post.
 exports.comment_list = asyncHandler(async (req, res, next) => {
+  // Check if id is valid
+  const isValidId = mongoose.Types.ObjectId.isValid(req.params.postId);
+  if (!isValidId) {
+    return res.status(400).json({ message: 'Invalid comment id' }); // Return 404 if comment id is invalid
+  }
+
   // Check DB for comments
   const comments = await Comment.find({ postId: req.params.postId })
     .sort({ timeStamp: -1 }) // Sort them from the latest to the oldest
     .exec();
+  // Return comments
   res.json(comments);
 });
 
@@ -259,7 +266,15 @@ exports.comment_update = [
 
 // Handle comment deletion on DELETE
 exports.comment_delete = asyncHandler(async (req, res, next) => {
-  res.json({
-    message: `DELETE comment ${req.params.id} for post ${req.params.postId} not implemented yet`,
-  });
+  // const check id
+  const isValidId = mongoose.Types.ObjectId.isValid(req.params.commentId);
+  if (!isValidId) {
+    return res.status(400).json({ message: 'Invalid comment ID' });
+  }
+  // USE JWT Payload USING PARAMS FOR TESTING
+  const deletedComment = await Comment.findByIdAndDelete(req.params.commentId);
+  if (!deletedComment) {
+    res.status(404).json({ message: 'Comment not found' });
+  }
+  res.json(deletedComment);
 });

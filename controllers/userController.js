@@ -100,9 +100,69 @@ exports.user_detail = asyncHandler(async (req, res, next) => {
 });
 
 // Handle user update on PUT
-exports.user_update = (req, res, next) => {
-  res.json({ message: `PUT user ${req.params.id} not implemented yet` });
-};
+exports.user_update = [
+  // Validate and sanitize inputs
+  body('username')
+    .trim()
+    .notEmpty()
+    .withMessage('Username field cannot be empty')
+    .custom(async (value) => {
+      const user = await User.findOne({ username: value });
+      if (user && user.username !== value) {
+        // Check if the retrieved user's username is different from the provided value
+        throw new Error('Username is already taken!');
+      }
+    })
+    .withMessage('Username already taken')
+    .escape(),
+  body('password').trim().escape(),
+  body('firstName')
+    .trim()
+    .notEmpty()
+    .withMessage('First name field cannot be empty.')
+    .escape(),
+  body('lastName')
+    .trim()
+    .notEmpty()
+    .withMessage('Last name field cannot be empty. ')
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    // Checks for errors during validations
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Sends validation errors
+      return res.status(400).json({ error: errors.array() });
+    }
+
+    // Hash password if user wants to change it
+    if (req.body.password) {
+      // Hash password using bcrypt
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      req.body.password = hashedPassword;
+    }
+
+    // Update user TODO READ JWT payload don't user req.params.id
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true, // Option that returns updated document
+        }
+      );
+    } catch (err) {
+      res.json({ message: 'USE JWT PAYLOAD' }); // REMOVE when using jwt payload
+    }
+
+    // If user not found, return 404
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  }),
+];
 
 // Handle user deletion on DELETE
 exports.user_delete = (req, res, next) => {

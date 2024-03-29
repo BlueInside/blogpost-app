@@ -14,6 +14,9 @@ router.get('/', user_controller.user_list);
 // POST request for creating new user
 router.post('/', user_controller.user_create);
 
+// GET request to get user info
+router.get('/:id', user_controller.user_detail);
+
 // PUT request for updating a user
 router.put('/:id', user_controller.user_update);
 

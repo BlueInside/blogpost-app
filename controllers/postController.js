@@ -203,17 +203,59 @@ exports.comment_create = [
 
 // Display detail for a specific comment
 exports.comment_detail = asyncHandler(async (req, res, next) => {
-  res.json({
-    message: `GET comment ${req.params.id} detail for post ${req.params.postId} not implemented yet`,
-  });
+  // Check if id is valid
+  const isValidId = mongoose.Types.ObjectId.isValid(req.params.commentId);
+  if (!isValidId) {
+    return res.status(400).json({ message: 'Invalid comment id' }); // Return 404 if comment id is invalid
+  }
+
+  // Find specific comment
+  const comment = await Comment.findById(req.params.commentId);
+  if (!comment) {
+    // Sends 404 if no comment found
+    res.status(404).json({ message: 'Comment not found' });
+  }
+
+  // Send comment
+  res.json(comment);
 });
 
 // Handle comment update on POST
-exports.comment_update = asyncHandler(async (req, res, next) => {
-  res.json({
-    message: `PUT comment ${req.params.id} for post ${req.params.postId} not implemented yet`,
-  });
-});
+exports.comment_update = [
+  body('username').trim().escape(),
+  body('text')
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Text field cannot be shorter than 3 characters')
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    // Check if the comment ID is valid
+    const isValidId = mongoose.Types.ObjectId.isValid(req.params.commentId);
+    if (!isValidId) {
+      return res.status(400).json({ message: 'Invalid comment id' });
+    }
+
+    // Checks for validation errors
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ message: 'Validation error', error: errors.array() });
+    }
+    // Update comment in DB
+    const updatedComment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      req.body,
+      { new: true } // Returns updated document
+    );
+    if (!updatedComment) {
+      return res.status(404).json({ message: 'Comment not found' }); // Sends 404 status code if no comment found
+    }
+    res.json(updatedComment); // Send updated comment
+  }),
+];
 
 // Handle comment deletion on DELETE
 exports.comment_delete = asyncHandler(async (req, res, next) => {

@@ -5,7 +5,7 @@ const { format } = require('date-fns');
 
 // Defines comment Schema
 const commentSchema = new Schema({
-  post: { type: mongoose.Types.ObjectId, required: true },
+  postId: { type: mongoose.Types.ObjectId, required: true },
   username: { type: String, default: 'Anonymous' }, // If no username provided, use "Anonymous"
   text: { type: String, required: true, minLength: 3 },
   timeStamp: { type: Date, default: Date.now, required: true }, // Timestamp use current date as time

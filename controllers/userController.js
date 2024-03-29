@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const authenticateUser = require('../lib/authenticate');
-
+const mongoose = require('mongoose');
 // Require dotenv
 require('dotenv').config();
 
@@ -84,9 +84,20 @@ exports.user_login = [
 ];
 
 // Display detail for a specific user
-exports.user_detail = (req, res, next) => {
-  res.json({ message: `GET user ${req.params.id} detail not implemented yet` });
-};
+exports.user_detail = asyncHandler(async (req, res, next) => {
+  const isValidId = mongoose.Types.ObjectId.isValid(req.params.id);
+
+  if (!isValidId) {
+    return res.status(400).json({ error: 'Invalid user id' });
+  }
+
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return res.status(404).json(`User not found`);
+  }
+  res.json(user);
+});
 
 // Handle user update on PUT
 exports.user_update = (req, res, next) => {

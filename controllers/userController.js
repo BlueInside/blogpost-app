@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const authenticateUser = require('../lib/authenticate');
 const mongoose = require('mongoose');
+const { findByIdAndDelete } = require('../models/comment');
 // Require dotenv
 require('dotenv').config();
 
@@ -151,20 +152,23 @@ exports.user_update = [
           new: true, // Option that returns updated document
         }
       );
+
+      // If user not found, return 404
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      return res.json(updatedUser);
     } catch (err) {
       res.json({ message: 'USE JWT PAYLOAD' }); // REMOVE when using jwt payload
     }
-
-    // If user not found, return 404
-    if (!updatedUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json(updatedUser);
   }),
 ];
 
 // Handle user deletion on DELETE
-exports.user_delete = (req, res, next) => {
-  res.json({ message: `DELETE user ${req.params.id} not implemented yet` });
-};
+exports.user_delete = asyncHandler(async (req, res, next) => {
+  // TODO USE JWT PAYLOAD TO GET USER.ID NOT PARAMS
+  // USING PARAMS FOR TESTING
+  const deletedUser = await User.findByIdAndDelete(req.params.id); // CHANGE TO JWT PAYLOAD as soon as implemented
+  res.json(deletedUser);
+});

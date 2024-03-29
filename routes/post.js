@@ -19,13 +19,13 @@ router.get('/', post_controller.post_list);
 router.get('/:id', post_controller.post_detail);
 
 // POST request for creating new post requires JWT TOKEN
-router.post('/', verifyToken, jwtVerify, post_controller.post_create);
+router.post('/', post_controller.post_create);
 
 // PUT request for updating a post requires JWT TOKEN
-router.put('/:id', verifyToken, jwtVerify, post_controller.post_update);
+router.put('/:id', post_controller.post_update);
 
 // DELETE request for deleting a post requires JWT TOKEN
-router.delete('/:id', verifyToken, jwtVerify, post_controller.post_delete);
+router.delete('/:id', post_controller.post_delete);
 
 /// COMMENTS ROUTES ///
 

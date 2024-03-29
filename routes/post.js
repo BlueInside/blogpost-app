@@ -1,5 +1,9 @@
+// Requires
+const verifyToken = require('../lib/verifyToken.js');
+
 // Require express
 const express = require('express');
+
 // Creates router
 const router = express.Router();
 
@@ -14,14 +18,14 @@ router.get('/', post_controller.post_list);
 // GET request for getting specific post
 router.get('/:id', post_controller.post_detail);
 
-// POST request for creating new post
-router.post('/', post_controller.post_create);
+// POST request for creating new post requires JWT TOKEN
+router.post('/', verifyToken, post_controller.post_create);
 
-// PUT request for updating a post
-router.put('/:id', post_controller.post_update);
+// PUT request for updating a post requires JWT TOKEN
+router.put('/:id', verifyToken, post_controller.post_update);
 
-// DELETE request for deleting a post
-router.delete('/:id', post_controller.post_delete);
+// DELETE request for deleting a post requires JWT TOKEN
+router.delete('/:id', verifyToken, post_controller.post_delete);
 
 /// COMMENTS ROUTES ///
 

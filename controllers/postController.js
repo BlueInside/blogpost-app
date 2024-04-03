@@ -49,8 +49,9 @@ exports.post_create = [
     .withMessage('isPublished must be boolean value'),
 
   asyncHandler(async (req, res, next) => {
+    console.log(req.user);
     // Get user id from JWT authentication,
-    const authorId = process.env.AUTHOR_ID;
+    const authorId = req.user.id;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -201,7 +202,6 @@ exports.comment_create = [
     });
     // Saves the comment
     const savedComment = await comment.save();
-    console.log(savedComment);
     // Finds a post by id
     const post = await Post.findById(req.params.postId);
 

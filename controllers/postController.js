@@ -15,10 +15,12 @@ const Comment = require('../models/comment');
 exports.post_list = asyncHandler(async (req, res, next) => {
   // Use asyncHandler to catch any errors that occur during asynchronous operations
 
-  const posts = await Post.find().populate({
-    path: 'author',
-    select: 'firstName lastName',
-  }); // Use Mongoose's find() method to retrieve all posts from the database
+  const posts = await Post.find()
+    .populate({
+      path: 'author',
+      select: 'firstName lastName',
+    })
+    .sort({ timeStamp: -1 }); // Use Mongoose's find() method to retrieve all posts from the database
   res.json(posts); // Send the retrieved posts as a JSON response
 });
 
@@ -80,6 +82,7 @@ exports.post_detail = asyncHandler(async (req, res, next) => {
     path: 'author',
     select: 'firstName lastName',
   });
+
   if (!post) {
     return res.status(400).json({ message: 'Post not found' });
   } else {

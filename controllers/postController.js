@@ -200,6 +200,7 @@ exports.comment_create = [
       username: req.body.username === '' ? 'Anonymous' : req.body.username,
       text: req.body.text,
     });
+
     // Saves the comment
     const savedComment = await comment.save();
     // Finds a post by id

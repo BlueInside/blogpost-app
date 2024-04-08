@@ -95,7 +95,7 @@ exports.user_detail = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   if (!user) {
-    return res.status(404).json(`User not found`);
+    return res.status(404).json({ error: `User not found` });
   }
   res.json(user);
 });
@@ -160,7 +160,7 @@ exports.user_update = [
 
       return res.json(updatedUser);
     } catch (err) {
-      res.json({ message: 'USE JWT PAYLOAD' }); // REMOVE when using jwt payload
+      res.json({ error: 'USE JWT PAYLOAD' }); // REMOVE when using jwt payload
     }
   }),
 ];

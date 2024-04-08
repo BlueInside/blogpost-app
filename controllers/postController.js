@@ -278,12 +278,19 @@ exports.comment_delete = asyncHandler(async (req, res, next) => {
   // const check id
   const isValidId = mongoose.Types.ObjectId.isValid(req.params.commentId);
   if (!isValidId) {
-    return res.status(400).json({ message: 'Invalid comment ID' });
+    return res.status(400).json({ error: 'Invalid comment ID' });
   }
   // USE JWT Payload USING PARAMS FOR TESTING
   const deletedComment = await Comment.findByIdAndDelete(req.params.commentId);
   if (!deletedComment) {
-    res.status(404).json({ message: 'Comment not found' });
+    return res.status(404).json({ error: 'Comment not found' });
   }
+  const updatedPost = await Post.findById(req.params.postId);
+  if (!updatedPost) {
+    res.status(404).json({ error: 'Post does not exist' });
+  }
+  updatedPost.comments.pull(deletedComment._id);
+  await updatedPost.save();
+
   res.json(deletedComment);
 });

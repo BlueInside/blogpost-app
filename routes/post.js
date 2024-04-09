@@ -42,6 +42,11 @@ router.get('/:postId/comments/:commentId', post_controller.comment_detail);
 router.put('/:postId/comments/:commentId', post_controller.comment_update);
 
 // DELETE a comment for a specific post
-router.delete('/:postId/comments/:commentId', post_controller.comment_delete);
+router.delete(
+  '/:postId/comments/:commentId',
+  verifyToken,
+  jwtVerify,
+  post_controller.comment_delete
+);
 
 module.exports = router;

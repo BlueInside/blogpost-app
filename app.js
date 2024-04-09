@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const compression = require('compression');
 // Create secret key for JWT
 require('./config/generateSecretKey');
 
@@ -23,6 +24,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());

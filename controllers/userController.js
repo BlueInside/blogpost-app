@@ -167,8 +167,6 @@ exports.user_update = [
 
 // Handle user deletion on DELETE
 exports.user_delete = asyncHandler(async (req, res, next) => {
-  // TODO USE JWT PAYLOAD TO GET USER.ID NOT PARAMS
-  // USING PARAMS FOR TESTING
   const deletedUser = await User.findByIdAndDelete(req.params.id); // CHANGE TO JWT PAYLOAD as soon as implemented
   res.json(deletedUser);
 });

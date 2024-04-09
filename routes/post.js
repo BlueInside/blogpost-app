@@ -39,7 +39,12 @@ router.post('/:postId/comments', post_controller.comment_create);
 router.get('/:postId/comments/:commentId', post_controller.comment_detail);
 
 // PUT update a comment for a specific post
-router.put('/:postId/comments/:commentId', post_controller.comment_update);
+router.put(
+  '/:postId/comments/:commentId',
+  verifyToken,
+  jwtVerify,
+  post_controller.comment_update
+);
 
 // DELETE a comment for a specific post
 router.delete(

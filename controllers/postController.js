@@ -49,7 +49,6 @@ exports.post_create = [
     .withMessage('isPublished must be boolean value'),
 
   asyncHandler(async (req, res, next) => {
-    console.log(req.user);
     // Get user id from JWT authentication,
     const authorId = req.user.id;
     const errors = validationResult(req);

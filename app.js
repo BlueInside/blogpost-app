@@ -24,6 +24,15 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// allowlist
+const allowlist = [
+  'https://karol-blogpost.netlify.app',
+  'https://blogpost-admin.netlify.app',
+];
+
+const corsOptions = {
+  origin: allowlist,
+};
 // Set up rate limiter: maximum of twenty requests per minute
 const RateLimit = require('express-rate-limit');
 const limiter = RateLimit({
@@ -35,7 +44,7 @@ app.use(limiter);
 app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

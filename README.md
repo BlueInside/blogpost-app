@@ -26,15 +26,6 @@ The BlogPost website is a simple blogging platform where users can create, publi
   - Users can leave comments on blog posts.
   - CRUD operations for comments.
 
-## Getting Started
-
-To get started with this project, make sure you have Node.js and MongoDB installed on your system.
-
-1. Clone this repository.
-2. Install dependencies using `npm install`.
-3. Set up your MongoDB database.
-4. Configure environment variables (if any).
-5. Start the server using `npm start`.
 
 ## Learning Goals
 

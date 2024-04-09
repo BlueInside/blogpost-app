@@ -16,7 +16,7 @@ const user_controller = require('../controllers/userController.js');
 router.get('/', verifyToken, jwtVerify, user_controller.user_list);
 
 // POST request for creating new user
-router.post('/', user_controller.user_create);
+router.post('/', verifyToken, jwtVerify, user_controller.user_create);
 
 // GET request to get user info requires JWT TOKEN
 router.get('/:id', verifyToken, jwtVerify, user_controller.user_detail);

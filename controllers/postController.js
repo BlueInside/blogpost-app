@@ -130,7 +130,7 @@ exports.post_update = [
 
     if (!updatedPost) {
       // Return not found message
-      return res.status(404).json({ message: 'Post not found' });
+      return res.status(404).json({ error: 'Post not found' });
     }
 
     // Return updated post
